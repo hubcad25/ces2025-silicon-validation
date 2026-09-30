@@ -1,0 +1,119 @@
+[
+  {
+    "variable": "cps25_spend_afford_h",
+    "question": "How much should the federal government spend on affordable housing?",
+    "options": {
+      "1": "Spend less",
+      "2": "Spend about the same as now",
+      "3": "Spend more",
+      "4": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Spend more"
+  },
+  {
+    "variable": "cps25_spend_nation_c",
+    "question": "How much should the federal government spend on a national childcare system?",
+    "options": {
+      "1": "Spend less",
+      "2": "Spend about the same as now",
+      "3": "Spend more",
+      "4": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Spend about the same as now"
+  },
+  {
+    "variable": "cps25_spend_defence",
+    "question": "How much should the federal government spend on defence?",
+    "options": {
+      "1": "Spend less",
+      "2": "Spend about the same as now",
+      "3": "Spend more",
+      "4": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Spend more"
+  },
+  {
+    "variable": "cps25_spend_rec_indi",
+    "question": "How much should the federal government spend on reconciliation with Indigenous Peoples?",
+    "options": {
+      "1": "Spend less",
+      "2": "Spend about the same as now",
+      "3": "Spend more",
+      "4": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Spend about the same as now"
+  },
+  {
+    "variable": "cps25_pos_life",
+    "question": "Individuals who are terminally ill should be allowed to end their lives with the assistance of a doctor.",
+    "options": {
+      "1": "Strongly disagree",
+      "2": "Somewhat disagree",
+      "3": "Neither agree nor disagree",
+      "4": "Somewhat agree",
+      "5": "Strongly agree",
+      "6": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Strongly agree"
+  },
+  {
+    "variable": "cps25_pos_energy",
+    "question": "The federal government should do more to help build oil pipelines.",
+    "options": {
+      "1": "Strongly disagree",
+      "2": "Somewhat disagree",
+      "3": "Neither agree nor disagree",
+      "4": "Somewhat agree",
+      "5": "Strongly agree",
+      "6": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Somewhat agree"
+  },
+  {
+    "variable": "cps25_pos_jobs",
+    "question": "When there is a conflict between protecting the environment and creating jobs, jobs should come first.",
+    "options": {
+      "1": "Strongly disagree",
+      "2": "Somewhat disagree",
+      "3": "Neither agree nor disagree",
+      "4": "Somewhat agree",
+      "5": "Strongly agree",
+      "6": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Somewhat agree"
+  },
+  {
+    "variable": "cps25_imm",
+    "question": "Do you think Canada should admit:",
+    "options": {
+      "1": "More immigrants",
+      "2": "Fewer immigrants",
+      "3": "About the same number of immigrants as now",
+      "4": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Fewer immigrants"
+  },
+  {
+    "variable": "cps25_demsat",
+    "question": "On the whole, how satisfied are you with the way democracy works in Canada?",
+    "options": {
+      "1": "Very satisfied",
+      "2": "Fairly satisfied",
+      "3": "Not very satisfied",
+      "4": "Not at all satisfied",
+      "5": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Fairly satisfied"
+  },
+  {
+    "variable": "cps25_own_fin_retro",
+    "question": "Over the past year, has your financial situation:",
+    "options": {
+      "1": "Got better",
+      "2": "Stayed about the same",
+      "3": "Got worse",
+      "4": "Don't know/Prefer not to answer"
+    },
+    "baseline_answer": "Stayed about the same"
+  }
+]

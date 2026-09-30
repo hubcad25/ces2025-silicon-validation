@@ -1,0 +1,5 @@
+validation.csv
+results_*.csv
+scores_*.csv
+group_weights.csv
+__pycache__/

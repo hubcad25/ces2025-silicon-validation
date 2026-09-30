@@ -1,0 +1,23 @@
+{
+  "source": "/Users/justinsavoie/Documents/personal_repos/opinionbench-research/data/raw/CES2025/2025 Canadian Election Study v1.dta",
+  "source_sha256": "e40bc83216cb4393d17e1b06b28c881a7358b43dfad7808e57705f41124e470d",
+  "validation_rows": 20180,
+  "result_rows": 1500,
+  "columns": [
+    "cps25_ResponseId",
+    "cps25_spend_afford_h",
+    "cps25_spend_nation_c",
+    "cps25_spend_defence",
+    "cps25_spend_rec_indi",
+    "cps25_pos_life",
+    "cps25_pos_energy",
+    "cps25_pos_jobs",
+    "cps25_imm",
+    "cps25_demsat",
+    "cps25_own_fin_retro",
+    "Age",
+    "Region"
+  ],
+  "missing_value": "Not asked / missing",
+  "baseline": "Unweighted overall CES modal answer per question; ties use smallest original code."
+}

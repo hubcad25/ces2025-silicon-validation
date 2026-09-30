@@ -1,0 +1,86 @@
+---
+title: "CES 2025: A Simple Silicon-Sampling Test"
+subtitle: "Ten questions · fifteen groups · a modal-answer baseline"
+date: "2026-09-30"
+format:
+  pdf:
+    documentclass: article
+    fontsize: 10pt
+    geometry: margin=0.65in
+    include-in-header:
+      text: |
+        \usepackage{enumitem}
+        \setlist{nosep,leftmargin=*}
+        \setlength{\parindent}{0pt}
+        \setlength{\parskip}{4pt}
+        \AtBeginDocument{\setlength{\abovedisplayskip}{5pt}\setlength{\belowdisplayskip}{5pt}}
+---
+
+## 1. What we are testing
+
+Compare any LLM, fine-tuned or not, against always returning the most common CES answer. **Five regions × three ages = 15 groups.** Run each group 100 times. Each run answers all ten questions: **1,500 runs, 1,500 result rows and 15,000 individual answers per model**. Separate-question calls would total 15,000.
+
+**Regions:** BC; AB+SK+MB+Terr (Alberta, Saskatchewan, Manitoba, Yukon, Northwest Territories and Nunavut); ON; QC; ATL (New Brunswick, Nova Scotia, Prince Edward Island, Newfoundland and Labrador). **Ages:** 18–34, 35–54, 55+. Assign groups from CES age and province.
+
+## 2. Ten questions, kept identical across models
+
+English campaign-period items; prefix variable suffixes with `cps25_`. Full wording and options: `questions.json`.
+
+1. How much should the federal government spend on **affordable housing**? (`spend_afford_h`)
+2. How much should the federal government spend on **a national childcare system**? (`spend_nation_c`)
+3. How much should the federal government spend on **defence**? (`spend_defence`)
+4. How much should the federal government spend on **reconciliation with Indigenous Peoples**? (`spend_rec_indi`)
+5. Individuals who are terminally ill should be allowed to end their lives with the assistance of a doctor. (`pos_life`)
+6. The federal government should do more to help build oil pipelines. (`pos_energy`)
+7. When there is a conflict between protecting the environment and creating jobs, jobs should come first. (`pos_jobs`)
+8. Do you think Canada should admit: **more, fewer, or about the same number of immigrants**? (`imm`; options incorporated here for readability)
+9. On the whole, how satisfied are you with the way democracy works in Canada? (`demsat`)
+10. Over the past year, has your financial situation: **got better, stayed about the same, or got worse**? (`own_fin_retro`; options incorporated here for readability)
+
+Items 1–4 offer less / same / more spending; 5–7 offer five agreement levels; 9 offers four satisfaction levels. **Every item also offers “Don't know/Prefer not to answer”; retain it as an answer category.** Do not collapse answer options into agree/disagree or remove uncertain answers.
+
+## 3. Validation and model-result files
+
+**`validation.csv`:** 20,180 human respondents, exactly 13 columns in this order: `cps25_ResponseId`, the ten question variables above, `Age`, `Region`. Preserve the original unique CES ID. Answers are readable English option labels, with numeric prefixes removed. Age is the age band; Region is one of the five labels above. No survey-weight column is added.
+
+**`Not asked / missing`** is excluded separately for each question, never treated as an opinion. Retain incomplete respondents: housing/childcare and other modules were assigned to different people. All 20,180 rows have unique IDs and valid age/region.
+
+**One `results_MODEL.csv` per model:** the same 13 columns, with a unique synthetic run ID in the first column, 100 rows per group and all ten answers on each row. Synthetic IDs do not identify or match real CES people. Supply only region, age and the English questionnaire/options. Use fresh context and temperature 1.0 where supported; record model version, training status and settings. Never reveal validation answers or modes. Retain invalid outputs; retry only failed requests.
+
+\newpage
+
+## 4. Exact TV calculation within each group
+
+Let $j$ denote one question, $g$ one of the 15 groups, and $k$ an answer category. Let $n_{jg}$ be the number of human respondents in group $g$ with a recorded answer to question $j$, including don't-know answers but excluding `Not asked / missing`. Use raw counts:
+
+$$p_{jgk}=\frac{\text{human count choosing }k\text{ in }(j,g)}{n_{jg}},\qquad q_{jgk}=\frac{\text{model count choosing }k\text{ in }(j,g)}{100}.$$
+
+An unrecognized or empty model answer becomes **Invalid output**, an extra category with human probability zero. Include it in all sums; keep the denominator at 100. No smoothing.
+
+$$\boxed{TV_{jg}=\frac12\sum_k|p_{jgk}-q_{jgk}|}$$
+
+This produces **150 TVs per model: ten questions × fifteen groups**. For example, human shares $(.20,.30,.40,.10)$ and model shares $(.10,.35,.45,.10)$ give TV $=\frac12(.10+.05+.05+0)=.10$. Lower is better: 0 means identical distributions; 1 means no overlap. Report human counts; flag those below 30 as imprecise. Stop scoring if a cell has no human answers.
+
+## 5. Exact weighting and overall TV for each question
+
+**The target is the observed CES sample, not a survey-weighted estimate of Canada's population.** Territories have no official CES survey weights. Use raw counts for human distributions and synthetic group weights.
+
+For each question separately, define the group's share among people who answered it:
+
+$$N_j=\sum_{g=1}^{15}n_{jg},\qquad a_{jg}=\frac{n_{jg}}{N_j},\qquad \text{weight of each model row in group }g=\frac{a_{jg}}{100}.$$
+
+Thus, if a group contains 8% of human answers to that question, each of its 100 model answers receives weight $0.08/100=0.0008$. Group shares are **question-specific**, because questionnaire modules change who answered. Shares sum to one; `group_weights.csv` records counts and weights.
+
+Aggregate the distributions first, then calculate TV:
+
+$$P_{jk}=\sum_g a_{jg}p_{jgk},\qquad Q_{jk}=\sum_g a_{jg}q_{jgk},\qquad \boxed{TV_j^{\mathrm{overall}}=\frac12\sum_k|P_{jk}-Q_{jk}|}.$$
+
+$P_{jk}$ is exactly the answer share obtained by pooling all valid human answers to question $j$. **Do not pool the 1,500 synthetic rows with equal weights:** that would give all groups the same size. Also, **overall TV is not the average of group TVs**; opposite group errors can cancel. Report both the ten overall TVs and all 150 group TVs. The headline score is the arithmetic mean of the ten overall TVs; each question has equal importance. 
+
+## 6. The “stupid” baseline and the improvement test
+
+**`results_stupid_baseline.csv`:** find the single most common valid CES answer to each question, across all groups combined, using raw counts. Break a tie using the smallest original CES option code. For that question, repeat this same answer 100 times in every group. This gives 1,500 rows; the baseline ignores group differences.
+
+Score it with the identical formulas and group weights. For each question report **improvement = baseline overall TV − model overall TV**; positive means the model wins. Do the same for each question–group cell. A model beats the baseline on the headline benchmark if its mean overall TV across the ten questions is strictly lower; equal scores are a tie. Report how many of the 150 cells improve as well, so aggregate improvement cannot hide subgroup losses.
+
+The baseline uses validation answers to select the mode: it is an informed diagnostic reference, not a deployable forecast. Record model training exposure to these items/respondents before claiming unseen-data performance. No LLM inference is needed to construct this baseline.
